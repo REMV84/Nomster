@@ -1,7 +1,9 @@
 class PlacesController < ApplicationController
- include Pagy::Backend
+ before_action :authenticate_user!, only: [:new, :create]
+  
+
   def index
-    @pagy, @places = pagy(Place.all, page: params[:page], items: 1)
+    @places = Place.paginate(page: params[:page], per_page: 1)
 
   end
 
@@ -10,7 +12,7 @@ class PlacesController < ApplicationController
   end  
 
   def create
-    Place.create(place_params)
+    current_user.places.create(place_params)
     redirect_to root_path
   end
 
